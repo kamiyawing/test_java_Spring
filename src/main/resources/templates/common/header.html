@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<nav th:fragment="header_fragment" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/userTop}">CyTech EC.</a>
+			
+			<div class="navbar-nav ms-auto">
+				<th:block th:if="${session.user == null}">
+					<a class="nav-link" th:href="@{/userLogin}">ログイン</a>
+					<a class="nav-link" th:href="@{/userRegister}">新規登録</a>
+				</th:block>
+				
+				<th:block th:if="${session.user != null}">
+					<form method="post" th:action="@{/products/search}" th:object="${productSearchForm}" class="d-flex align-items-center gap-2 me-3">
+						<input type="text" th:field="*{productName}" placeholder="商品名">
+						<select th:field="*{categoryId}" class="form-select">
+							<option value="">カテゴリ</option>
+							<option th:each="cat :${categories}"
+									th:value="${cat.categoryId}"
+									th:text="${cat.categoryName}">
+							</option>
+						</select>
+						<input type="submit" value="検索">
+					</form>
+					<span class="nav-link text-light">
+						<strong th:text="${session.user.userName}"></strong> さん
+					</span>
+					<a class="btn btn-outline-primary" th:href="@{/cart/list}">カート</a>
+					<a class="nav-link" th:href="@{/logout}">ログアウト</a>
+				</th:block>
+			</div>
+		</div>
+	</nav>
+</body>
+</html>

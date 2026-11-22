@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>ログインページ</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+		<h3>ログイン</h3>
+		
+		<p th:if="${successMessage}" th:text="${successMessage}"></p>
+		<div th:if="${error}" th:text="${error}"></div>
+		
+		<form method="post" th:action="@{/loginCheck}" th:object="${loginForm}">
+			<label for="text">メールアドレス：</label>
+			<input type="email" th:field="*{email}"><br>
+			
+			<label for="text">パスワード：</label>
+			<input type="password" th:field="*{passwords}"><br>
+			
+			<input type="submit" value="ログイン" class="btn btn-success">
+			<a th:href="@{/userRegister}" class="btn btn-primary">新規登録</a>
+		</form>
+	</div>
+
+</body>
+</html>

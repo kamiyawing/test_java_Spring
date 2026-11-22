@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>購入画面</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+		<h2>購入確認画面</h2>
+		<div>
+			<p th:text="|カート内合計点数：${totalQuantity} 点|"></p>
+			<p th:text="|カート内合計金額：${totalPrice} 円 (税込)|"></p>
+		</div>
+		<div class="accordion" id="accordionCart">
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCart" aria-expanded="true" aria-controls="collapseCart">
+				        カート内の詳細を見る
+					</button>
+				</h2>
+				<div id="collapseCart" class="accordion-collapse collapse" data-bs-parent="#accordionCart">
+					<div class="accordion-body">
+						<div class="row mb-3" th:each="list, iterStat : ${cartList}" th:with="dto=${saleDtoList[iterStat.index]}">
+							<div class="col-md-4">
+								<img th:src="@{|/images/${list.product.imgPath}|}" class="img-fluid" alt="商品画像">
+							</div>
+							<div class="col-md-8">
+								<p th:text="|商品名：${list.product.productName}|"></p>
+								<div th:if="${dto != null and dto.sale}">
+									<p class="text-muted text-decoration-line-through mb-1">
+										定価：<span th:text="${list.product.price}">3000</span> 円
+										（税込：<span th:text="${list.product.includeTax}">3300</span> 円）
+									</p>
+									<p class="text-danger fw-bold mb-1">
+										セール価格：<span th:text="${dto.effectivePrice}">2400</span> 円
+										（税込：<span th:text="${dto.effectiveIncludeTax}">2640</span> 円）
+										<span class="badge bg-danger ms-1">セール中！</span>
+									</p>
+								</div>
+								<div th:unless="${dto != null and dto.sale}">
+									<p th:text="|価格：${list.product.price} 円|"></p>
+									<p th:text="|税込価格：${list.product.includeTax} 円|"></p>
+								</div>
+								<p th:text="|個数：${list.quantity} 点|"></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<form method="post" th:action="@{/order/Check}" th:object="${orderForm}">
+				<h4>＜お届け先確認＞</h4>
+				<div>
+					<label>名前：</label>
+					<input type="text" th:field="*{deliveryName}">
+					<label>住所</label>
+					<input type="text" th:field="*{deliveryAddress}">
+					<label>アパート名等</label>
+					<input type="text" th:field="*{deliveryApartment}">
+				</div>
+
+				<h4>＜お支払情報＞</h4>
+				<div>
+					<label>カード番号：</label>
+					<input type="text" size="4" maxlength="4" th:field="*{cardNumber1}">-
+					<input type="text" size="4" maxlength="4" th:field="*{cardNumber2}">-
+					<input type="text" size="4" maxlength="4" th:field="*{cardNumber3}">-
+					<input type="text" size="4" maxlength="4" th:field="*{cardNumber4}">
+				</div>
+
+				<div>
+					<label>有効期限：</label>
+					<select th:field="*{expireMonth}">
+						<option th:each="m : ${#numbers.sequence(1, 12)}"
+							    th:value="${#numbers.formatInteger(m, 2)}"
+								th:text="${#numbers.formatInteger(m, 2)}"></option>
+					</select> 月 /
+					<select th:field="*{expireYear}">
+						<option th:each="y : ${#numbers.sequence(nowYear, nowYear + 10)}"
+								th:value="${#strings.substring(y, 2, 4)}"
+								th:text="${#strings.substring(y, 2, 4)}"></option>
+					</select> 年
+				</div>
+
+				<div>
+					<label>セキュリティコード：</label>
+					<input type="text" size="3" maxlength="4" th:field="*{securityCode}">
+				</div>
+				<div>
+					<input type="submit" class="btn btn-warning" value="確認">
+					<a th:href="@{/cart/list}" class="btn btn-secondary">一覧へ戻る</a>
+				</div>
+			</form>
+		</div>
+
+	</div>
+</body>
+</html>

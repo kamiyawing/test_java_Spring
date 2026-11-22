@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>ユーザートップ画面</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+		<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+			<p th:text="${errorMessage}"></p>
+		</div>
+
+		<h2 class="mb-4">セール品</h2>
+		<div class="row row-cols-1 row-cols-md-3 g-4">
+			<div th:if="${!#lists.isEmpty(saleItems)}">
+				<div class="col" th:each="saleItem : ${saleItems}">
+					<div class="card h-100 shadow-sm">
+						<img th:src="@{|/images/${saleItem.product.imgPath}|}" class="card-img-top card-img-fixed" alt="商品画像">
+						<div class="card-body">
+							<h5 class="card-title" th:text="${saleItem.saleName}">セール名</h5>
+							<p class="card-text text-danger fw-bold">
+								<span th:text="${saleItem.discountRate}"></span>% OFF！
+							</p>
+							<p class="card-text">対象商品：
+								<span th:text="${saleItem.product.productName}">商品名</span>
+							</p>
+						</div>
+						<div class="card-footer bg-white border-top-0">
+							<a th:href="@{|/products/detail/${saleItem.product.productId}|}" class="btn btn-primary w-100">詳細を見る</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div th:if="${#lists.isEmpty(saleItems)}">
+				<p>現在セール対象の商品はございません。</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

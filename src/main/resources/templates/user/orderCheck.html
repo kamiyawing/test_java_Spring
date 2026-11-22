@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>購入確認画面</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+		<h2 class="mb-4">購入確認画面</h2>
+		<div class="container" th:if="${!#lists.isEmpty(cartList)}">
+			<div class="row mb-3" th:each="list, iterStat : ${cartList}" th:with="dto=${saleDtoList[iterStat.index]}">
+				<div class="col-md-4">
+					<img th:src="@{|/images/${list.product.imgPath}|}" class="img-fluid" alt="商品画像">
+				</div>
+				<div class="col-md-8">
+					<p th:text="|商品名：${list.product.productName}|"></p>
+					<div th:if="${dto != null and dto.sale}">
+						<p class="text-muted text-decoration-line-through mb-1">
+							定価：<span th:text="${list.product.price}">3000</span> 円
+							（税込：<span th:text="${list.product.includeTax}">3300</span> 円）
+						</p>
+						<p class="text-danger fw-bold mb-1">
+							セール価格：<span th:text="${dto.effectivePrice}">2400</span> 円
+							（税込：<span th:text="${dto.effectiveIncludeTax}">2640</span> 円）
+							<span class="badge bg-danger ms-1">セール中！</span>
+						</p>
+					</div>
+					<div th:unless="${dto != null and dto.sale}">
+						<p th:text="|価格：${list.product.price} 円|"></p>
+						<p th:text="|税込価格：${list.product.includeTax} 円|"></p>
+					</div>
+					<p th:text="|個数：${list.quantity} 点|"></p>
+				</div>
+			</div>
+		</div>
+		<div>
+			<div class="card p-3 bg-light">
+				<p th:text="|カート内合計点数：${totalQuantity} 点|"></p>
+				<p th:text="|カート内合計金額：${totalPrice} 円 (税込)|"></p>
+			</div>
+		</div>
+		<div>
+			<p>
+				<label>お届け先名：</label>
+				<span th:text="|${orderForm.deliveryName}|"></span>
+			</p>
+			<p>
+				<label>住所：</label>
+				<span th:text="|${orderForm.deliveryAddress}|"></span>
+			</p>
+			<p th:if="${!#strings.isEmpty(orderForm.deliveryApartment)}">
+				<label>アパート名：</label>
+				<span th:text="|${orderForm.deliveryApartment}|"></span>
+			</p>
+		</div>
+		<div th:unless="${!#lists.isEmpty(cartList)}" class="text-center py-5">
+			<div class="alert alert-info">
+				カートに商品が入っていません
+			</div>
+		</div>
+		<form th:action="@{/orderComplete}" method="post" th:object="${orderForm}">
+			<input type="hidden" th:field="*{deliveryName}">
+			<input type="hidden" th:field="*{deliveryAddress}">
+			<input type="hidden" th:field="*{deliveryApartment}">
+			<input type="hidden" name="paymentMethod" value="クレジットカード決済">
+			<button type="submit">注文を確定する</button>
+		</form>
+		<div>
+			<a th:href="@{/order}" class="btn btn-primary">注文確認画面に戻る</a>
+			<a th:href="@{/userTop}" class="btn btn-secondary">TOP画面に戻る</a>
+		</div>
+	</div>
+</body>
+</html>

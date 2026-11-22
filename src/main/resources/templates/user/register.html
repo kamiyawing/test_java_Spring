@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>新規登録画面</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+		<div>ユーザー新規登録</div>
+		<form method="post" th:action="@{/userRegister/create}" th:object="${registerForm}">
+			<label>氏名：</label>
+			<input type="text" th:field="*{userName}"><br>
+			<span th:errors="*{userName}"></span><br>
+			
+			<label>フリガナ：</label>
+			<input type="text" th:field="*{userNameKana}"><br>
+			<span th:errors="*{userNameKana}"></span><br>
+			
+			<label>メールアドレス：</label>
+			<input type="email" th:field="*{email}"><br>
+			<span th:errors="*{email}"></span><br>
+			
+			<label>電話番号：</label>
+			<input type="text" th:field="*{phone}"><br>
+			<span th:errors="*{phone}"></span><br>
+			
+			<label>住所：</label>
+			<input type="text" th:field="*{userAddress}"><br>
+			<span th:errors="*{userAddress}"></span><br>
+			
+			<label>パスワード：</label>
+			<input type="password" th:field="*{passwords}"><br>
+			<span th:errors="*{passwords}"></span><br>
+			
+			<input type="submit" value="新規登録">
+			<button th:formaction="@{/userLogin}">戻る</button>
+		</form>
+	</div>
+</body>
+</html>

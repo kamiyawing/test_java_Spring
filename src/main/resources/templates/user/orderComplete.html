@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>注文完了画面</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+		<div>
+			<h2 class="mb-4">ご購入ありがとうございました！</h2>
+			<p>注文処理が正常に完了しました。</p>
+			<div class="mt-5">
+				<a th:href="@{/userTop}" class="btn btn-primary">TOP画面に戻る</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

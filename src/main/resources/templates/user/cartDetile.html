@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>カート詳細画面</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+		<h2 class="mb-4">カート詳細画面</h2>
+		<div class="row" th:if="${cart != null}">
+			<div class="col-md-4">
+				<img th:src="@{|/images/${cart.product.imgPath}|}" class="img-fluid" alt="商品画像">
+			</div>
+			<div class="col-md-5">
+				<form method="post" th:action="@{/cart/update}" th:object="${cartUpdateForm}">
+					<input type="hidden" th:field="*{cartId}">
+					<p th:text="|商品名：${cart.product.productName}|"></p>
+					<div class="mb-2">
+						<span>数量：
+							<input type="number" th:field="*{quantity}"> 点
+						</span>
+						<input type="submit" value="更新" class="btn btn-primary">
+					</div>
+
+					<!-- セール対象商品の場合 -->
+					<div th:if="${saleDto != null and saleDto.sale}" class="my-2">
+						<p class="text-muted text-decoration-line-through mb-1">
+							定価：<span th:text="${cart.product.price}">3000</span> 円
+							（税込：<span th:text="${cart.product.includeTax}">3300</span> 円）
+						</p>
+						<h5 class="text-danger fw-bold">
+							セール価格：<span th:text="${saleDto.effectivePrice}">2400</span> 円
+							（税込：<span th:text="${saleDto.effectiveIncludeTax}">2640</span> 円）
+							<span class="badge bg-danger ms-2">セール中！</span>
+						</h5>
+						<p class="text-danger small" th:text="${saleDto.saleItem.saleName + ' (' + saleDto.saleItem.discountRate + '%OFF)'}"></p>
+					</div>
+
+					<!-- セール対象外の場合 -->
+					<div th:unless="${saleDto != null and saleDto.sale}" class="my-2">
+						<p th:text="|価格：${cart.product.price} 円|"></p>
+						<p th:text="|税込価格：${cart.product.includeTax} 円|"></p>
+					</div>
+
+					<a th:href="@{|/cart/delete/${cart.cartId}|}"
+					   class="btn btn-danger"
+					   onclick="return confirm('この商品をカートから削除します。よろしいですか？')">削除</a>
+				</form>
+			</div>
+			<div class="col-md-3">
+				<a th:href="@{/cart/list}" class="btn btn-secondary mb-3">カート一覧へ戻る</a>
+				<div class="card p-3 bg-light mb-3">
+					<h3>小計</h3>
+					<p th:text="|個数：${totalQuantity} 点|"></p>
+					<p th:text="|税抜金額：${totalPrice} 円|"></p>
+					<p th:text="|税込金額：${totalIncludeTax} 円|"></p>
+				</div>
+				<div class="card p-3 bg-light">
+					<h3>カート内合計</h3>
+					<p th:text="|カート内数量：${cartQuantity} 点|"></p>
+					<p th:text="|税抜金額：${cartPrice} 円(税抜)|"></p>
+					<p th:text="|税込金額：${cartIncludeTax} 円(税込)|"></p>
+					<a th:href="@{/order}" class="btn btn-primary w-100">レジに進む</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

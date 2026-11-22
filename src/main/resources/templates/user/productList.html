@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>商品一覧</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+			<h2 class="mb-4">商品一覧画面</h2>
+			<div class="row row-cols-1 row-cols-md-3 g-4">
+				<div class="col" th:each="list, iterStat : ${productList}" th:with="dto=${saleDtoList[iterStat.index]}">
+					<div class="card h-100 shadow-sm">
+						<img th:src="@{|/images/${list.imgPath}|}" class="card-img-top card-img-fixed" alt="商品画像">
+						<div class="card-body">
+							<h5 class="card-title" th:text="${list.productName}"></h5>
+							<p class="card-text text-danger fw-bold">
+								<span th:text="${list.company.companyName}"></span>
+							</p>
+
+							<!-- セール対象商品の場合 -->
+							<div th:if="${dto != null and dto.sale}">
+								<p class="card-text text-muted text-decoration-line-through mb-1">
+									定価：税抜 <span th:text="${list.price}"></span> 円 /
+									税込 <span th:text="${list.includeTax}"></span> 円
+								</p>
+								<p class="card-text text-danger fw-bold mb-1">
+									セール価格：税抜 <span th:text="${dto.effectivePrice}"></span> 円 /
+									税込 <span th:text="${dto.effectiveIncludeTax}"></span> 円
+									<span class="badge bg-danger ms-1">セール中！</span>
+								</p>
+								<p class="card-text text-danger small" th:text="${dto.saleItem.saleName + ' (' + dto.saleItem.discountRate + '%OFF)'}"></p>
+							</div>
+
+							<!-- セール対象外の場合 -->
+							<div th:unless="${dto != null and dto.sale}">
+								<p class="card-text">税抜：
+									<span th:text="${list.price}"></span> 円
+								</p>
+								<p class="card-text">税込：
+									<span th:text="${list.includeTax}"></span> 円
+								</p>
+							</div>
+						</div>
+						<div class="card-footer bg-white border-top-0">
+							<a th:href="@{|/products/detail/${list.productId}|}" class="btn btn-primary w-100">詳細を見る</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

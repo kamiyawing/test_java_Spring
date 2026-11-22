@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>商品詳細画面</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+		<h2 class="mb-4">商品詳細画面</h2>
+		<div class="row">
+			<div class="col-md-4">
+				<img th:src="@{|/images/${productSaleDto.product.imgPath}|}" class="img-fluid" alt="商品画像">
+			</div>
+			<div class="col-md-5">
+				<p th:text="|商品名：${productSaleDto.product.productName}|"></p>
+				<p th:text="|メーカー名：${productSaleDto.product.company.companyName}|"></p>
+			</div>	
+				
+			<div class="my-3">
+				<!--セール対象商品の場合-->
+					<div th:if="${productSaleDto.sale}">
+						<p class="text-muted text-decoration-line-through mb-1">
+							定価：<span th:text="${productSaleDto.product.price}">3000</span> 円
+							（税込：<span th:text="${productSaleDto.product.includeTax}">3300</span> 円）
+						</p>
+						<h4 class="text-danger fw-bold">
+							セール価格：<span th:text="${productSaleDto.salePrice}">2400</span> 円 （税込）
+							<span class="badge bg-danger ms-2">セール中！</span>
+						</h4>
+						<p class="text-danger small" th:text="${productSaleDto.saleItem.saleName + ' (' + productSaleDto.saleItem.discountRate + '%OFF)'}"></p>
+					</div>
+					
+				<!--セール対象外の場合-->
+					<div th:unless="${productSaleDto.sale}">
+						<p th:text="|価格：${productSaleDto.product.price} 円|"></p>
+						<p th:text="|税込価格：${productSaleDto.product.includeTax} 円|"></p>
+					</div>
+				<p th:text="|在庫数：${productSaleDto.product.stock} 点|"></p>
+				<p class="text-muted" th:text="${productSaleDto.product.comment}"></p>
+			</div>
+			
+			<div class="col-md-3">
+				<form method="post"th:action="@{/carts/add}" th:object="${cartsForm}" class="p-3 border rounded bg-light">
+					<input type="hidden" th:field="*{productId}">
+					
+					<div th:if="${productSaleDto.product.stock > 0}" class="vstack gap-3">
+						<input type="submit" class="btn btn-primary" value="カートに入れる">
+						<div class="d-flex align-items-center gap-2">
+							<label class="text-nowrap mb-0">数量：</label>
+							<input type="number"
+								   th:field="*{quantity}"
+								   class="form-control text-center"
+								   style="width: 85px;"
+								   min="1"
+								   th:max="${productSaleDto.product.stock}"
+								   required>
+						</div>
+						<p>(在庫 : [[${productSaleDto.product.stock}]] 点)</p>
+					</div>
+					<div th:if="${productSaleDto.product.stock == 0}" class="vstack gap-3">
+						<p class="text-danger fw-bold">在庫切れ</p>
+						<p class="text-danger">申し訳ございません。ただいま在庫を切らしております。</p>
+					</div>
+				</form>
+			</div>
+			<div>
+				<div>
+					<h4>口コミ</h4>
+					<div th:if="${!#lists.isEmpty(reviews)}">
+						<div th:each="review : ${reviews}">
+							<label>ユーザー名：</label>
+							<p th:text="${review.dummyUserName}"></p>
+							<label>投稿日時：</label>
+							<p th:text="${review.createdAt}"></p>
+							<label>コメント：</label>
+							<p th:text="${review.comment}"></p>
+							<label>評価：</label>
+							<p th:text="${review.rating}"></p>
+						</div>
+					</div>
+					<div th:if="${#lists.isEmpty(reviews)}">
+						現在この商品のレビューはありません
+					</div>
+				</div>
+				<div>
+					<a th:href="@{/review/input/{id}(id=${productSaleDto.product.productId})}" class="btn btn-primary">
+					    この商品の口コミを投稿する
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

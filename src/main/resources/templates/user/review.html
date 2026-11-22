@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layout}">
+<head>
+<meta charset="UTF-8">
+<title>口コミ投稿画面</title>
+</head>
+<body>
+	<div layout:fragment="content" class="container mt-5">
+		<h2>口コミ投稿画面</h2>
+		<div>
+			<form method="post" th:action="@{/review/complete}" th:object="${reviewForm}">
+				<div>
+					<input type="hidden" th:field="*{userId}">
+					<input type="hidden" th:field="*{productId}">
+				</div>
+				<div>
+					<label>ユーザー名(任意)</label>
+					<input type="text" th:field="*{dummyUserName}">
+				</div>
+				<div>
+					<label>評価</label>
+					<select th:field="*{rating}">
+						<option th:each="i : ${#numbers.sequence(1, 5)}"
+								th:value="${i}"
+								th:text="${i + '点'}"></option>
+					</select>
+				</div>
+				<div>
+					<label>コメント</label>
+					<input type="text" th:field="*{comment}">
+				</div>
+				<div>
+					<label>画像</label>
+					<input type="file" th:field="*{reviewImgPath}">
+				</div>
+				<div>
+					<button type="submit">投稿</button>
+				</div>	
+			</form>
+		</div>
+	</div>
+</body>
+</html>
